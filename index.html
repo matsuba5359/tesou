@@ -281,6 +281,141 @@
   /* --- ヒーロー微調整（トップのみ） --- */
   .title{margin-top:6px}
   .title .kanji{font-size:36px}
+
+  /* =====================================================================
+     オシャレ・リファイン（上書きレイヤー）
+     ===================================================================== */
+  :root{
+    --gold:#E4C784; --gold-soft:#F3E2B8; --gold-deep:#BE9C55; --gold-line:rgba(233,208,150,.34);
+    --ink:#F0ECFC; --ink-dim:#D2CBEC; --muted:#A79FCB;
+    --gold-grad:linear-gradient(120deg,#FBEFCB 0%,#E4C784 40%,#C2A15C 68%,#F2E2B0 100%);
+    --line:rgba(170,150,225,.15); --line-strong:rgba(190,168,235,.24);
+  }
+  body{
+    background:
+      radial-gradient(1200px 760px at 50% -12%, #2c2058 0%, rgba(24,16,46,0) 58%),
+      radial-gradient(760px 760px at 90% 6%, rgba(150,112,196,.20) 0%, transparent 56%),
+      radial-gradient(880px 880px at 6% 94%, rgba(74,132,140,.14) 0%, transparent 56%),
+      linear-gradient(180deg,#140d2c 0%, #09061a 100%) fixed;
+    background-color:#09061a;
+  }
+  /* 全体を柔らかく締めるヴィネット */
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(120% 90% at 50% 30%, transparent 58%, rgba(4,3,12,.5) 100%)}
+  /* ガラス質パネル */
+  .panel{
+    background:linear-gradient(180deg, rgba(40,32,72,.62), rgba(19,14,38,.58));
+    backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%);
+    border:1px solid rgba(233,208,150,.15);border-radius:22px;padding:24px 20px;
+    box-shadow:0 26px 64px -24px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.07)}
+  .panel::after{left:24px;right:24px;opacity:.9}
+  .panel-h{font-size:14px;letter-spacing:.16em;text-transform:none}
+  .panel-h::before{content:"✦";opacity:.9}
+  /* ヒーロー */
+  .title .kanji{font-size:38px;letter-spacing:.26em;filter:drop-shadow(0 3px 18px rgba(228,199,132,.3))}
+  .title .en{letter-spacing:.42em;font-size:15px;opacity:.66}
+  .ornament{opacity:.8;margin:18px 0 12px}
+  .ornament span{background:linear-gradient(90deg,transparent,rgba(233,208,150,.4),transparent)}
+  .sub{font-size:13px;letter-spacing:.16em;opacity:.82}
+  .appbar{background:linear-gradient(180deg,rgba(14,10,30,.82),rgba(14,10,30,.5));
+    backdrop-filter:saturate(150%) blur(16px);-webkit-backdrop-filter:saturate(150%) blur(16px)}
+  .appbar-brand{letter-spacing:.2em}
+  /* ボタン（クチュール寄り） */
+  .btn{border-radius:16px;letter-spacing:.07em;font-weight:600;padding:15px 20px;
+    border:1px solid rgba(190,168,235,.22)}
+  .btn:hover{border-color:rgba(233,208,150,.4);box-shadow:0 10px 26px -12px rgba(228,199,132,.5)}
+  .btn.primary{color:#2c2207;border:1px solid rgba(255,244,214,.6);
+    box-shadow:0 14px 32px -12px rgba(228,199,132,.7), inset 0 1px 0 rgba(255,255,255,.6)}
+  .toggle-row{background:rgba(150,130,205,.1);border:1px solid rgba(190,168,235,.16)}
+  /* 元素バッジ */
+  .element-badge .glyph{width:76px;height:76px;font-size:40px;
+    box-shadow:0 0 34px -8px rgba(228,199,132,.5), inset 0 0 22px rgba(228,199,132,.1)}
+  .element-badge .el-name{font-size:23px;letter-spacing:.1em}
+  .element-badge .el-en{letter-spacing:.18em;opacity:.8}
+  /* 本文 */
+  .reading{font-size:16px;line-height:2.15;letter-spacing:.03em;color:#F6F2FF}
+  /* 指カード */
+  .finger-card{border-radius:18px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.012))}
+  .finger-card .planet{width:38px;height:38px}
+  /* メーターの光点をやや上品に */
+  .track{height:5px}
+  .track .dot{width:12px;height:12px;box-shadow:0 0 14px 3px rgba(243,226,184,.55),0 0 0 5px rgba(228,199,132,.12)}
+  /* 運勢 */
+  .fortune-hero .score{width:80px;height:80px;
+    box-shadow:0 0 34px -8px rgba(228,199,132,.55),inset 0 0 20px rgba(228,199,132,.1)}
+  .fortune-hero .score b{font-size:33px}
+  .fitem .fico{border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.014))}
+  .lucky .chip{border-radius:16px}
+  /* データチップ */
+  .datarow span{border-radius:99px;background:rgba(228,199,132,.05)}
+  /* 詳細折りたたみ */
+  details{border-radius:18px;border:1px solid rgba(190,168,235,.14);
+    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.006))}
+  /* モーダル */
+  .modal{background:rgba(6,4,16,.8)}
+  .modal .box{border-radius:26px 26px 0 0}
+  @media (min-width:520px){.modal .box{border-radius:26px}}
+
+  /* =====================================================================
+     ローズゴールド・華やかレイヤー（女性向け）
+     ===================================================================== */
+  :root{
+    --gold:#E7B7A3; --gold-soft:#F7DCCF; --gold-deep:#CE9081; --gold-line:rgba(231,168,168,.36);
+    --gold-grad:linear-gradient(120deg,#FCE6DC 0%,#F0C3B4 34%,#E29A9F 62%,#F6D6C9 100%);
+    --star:#FFF3F6; --ink:#F6EEF2; --ink-dim:#E4D3DA; --muted:#C4A6B4;
+    --line:rgba(225,160,185,.16); --line-strong:rgba(232,168,190,.26);
+  }
+  body{
+    background:
+      radial-gradient(1200px 760px at 50% -12%, #3a2148 0%, rgba(40,20,44,0) 58%),
+      radial-gradient(720px 720px at 88% 4%, rgba(230,140,175,.24) 0%, transparent 56%),
+      radial-gradient(820px 820px at 8% 96%, rgba(190,120,175,.18) 0%, transparent 56%),
+      linear-gradient(180deg,#241531 0%, #140a1e 100%) fixed;
+    background-color:#140a1e;
+  }
+  body::after{background:radial-gradient(120% 90% at 50% 30%, transparent 56%, rgba(20,6,20,.5) 100%)}
+  /* きらめきを桜色に */
+  .stars-bg i{box-shadow:0 0 6px 1px rgba(255,220,230,.6)}
+  /* パネル：ブラッシュがかったガラス */
+  .panel{
+    background:linear-gradient(180deg, rgba(64,38,66,.60), rgba(32,18,40,.58));
+    border:1px solid rgba(231,168,180,.18);
+    box-shadow:0 26px 64px -24px rgba(30,6,24,.8), inset 0 1px 0 rgba(255,235,240,.08)}
+  .appbar{background:linear-gradient(180deg,rgba(28,14,30,.82),rgba(28,14,30,.5))}
+  /* ヒーロー */
+  .title .kanji{filter:drop-shadow(0 3px 20px rgba(231,150,160,.4))}
+  .ornament span{background:linear-gradient(90deg,transparent,rgba(240,180,190,.5),transparent)}
+  /* ボタン */
+  .btn{border:1px solid rgba(232,168,190,.24)}
+  .btn:hover{border-color:rgba(240,170,185,.5);box-shadow:0 10px 26px -12px rgba(231,150,170,.55)}
+  .btn.primary{color:#4a1f26;border:1px solid rgba(255,232,232,.6);
+    box-shadow:0 14px 32px -12px rgba(231,150,170,.75), inset 0 1px 0 rgba(255,245,245,.65)}
+  .toggle-row{background:rgba(210,140,180,.12);border:1px solid rgba(232,168,190,.18)}
+  .toggle-row .btn.active{color:#4a1f26}
+  /* 元素バッジ・運勢の発光をローズに */
+  .element-badge .glyph{color:var(--gold-soft);
+    background:radial-gradient(circle at 50% 40%,rgba(231,168,168,.2),rgba(231,168,168,.03) 70%);
+    border:1px solid var(--gold-line);
+    box-shadow:0 0 36px -8px rgba(231,150,170,.55), inset 0 0 22px rgba(231,150,170,.12)}
+  .element-badge .glyph::after{border:1px solid rgba(231,168,180,.2)}
+  .fortune-hero .score{
+    background:radial-gradient(circle at 50% 38%,rgba(231,168,168,.22),rgba(231,168,168,.03) 72%);
+    border:1px solid var(--gold-line);
+    box-shadow:0 0 36px -8px rgba(231,150,170,.6),inset 0 0 20px rgba(231,150,170,.12)}
+  .finger-card .planet{color:var(--gold-soft);
+    background:radial-gradient(circle at 40% 35%,rgba(231,168,168,.22),rgba(231,168,168,.03));
+    border:1px solid var(--gold-line)}
+  /* メーターの光点 */
+  .track .dot{background:radial-gradient(circle at 35% 30%,#fff,var(--gold-soft) 55%,var(--gold-deep));
+    box-shadow:0 0 14px 3px rgba(247,220,207,.6),0 0 0 5px rgba(231,168,168,.14)}
+  .track .bound{background:var(--gold)}
+  /* 選択・トースト・データチップ */
+  ::selection{background:rgba(231,150,170,.3);color:#fff}
+  .datarow span{background:rgba(231,168,168,.06);border-color:rgba(231,168,185,.18)}
+  .toast{border-color:var(--gold-line)}
+  details{border:1px solid rgba(232,168,190,.16)}
+  .imgcap{border:1px solid var(--gold-line);background:#170a1c}
 </style>
 </head>
 <body>
