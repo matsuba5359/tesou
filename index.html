@@ -418,9 +418,9 @@
   .imgcap{border:1px solid var(--gold-line);background:#170a1c}
 
   /* =====================================================================
-     演出・アニメーション（ワクワク感）
+     演出・アニメーション（ワクワク感）※端末設定に関わらず常時再生
      ===================================================================== */
-  @media (prefers-reduced-motion:no-preference){
+  @media all{
     /* タイトルの金がゆっくり流れる */
     .title .kanji,.appbar-brand{background-size:220% auto;animation:shine 7s linear infinite}
     @keyframes shine{to{background-position:220% center}}
@@ -676,7 +676,7 @@ let creaseMode=false;  // false=参考ライン true=実際のしわ
 
 /* ---------- starfield ---------- */
 (function(){
-  const bg=$('starsBg'); const n=window.matchMedia('(prefers-reduced-motion:reduce)').matches?0:40;
+  const bg=$('starsBg'); const n=40;
   for(let i=0;i<n;i++){const s=document.createElement('i');
     s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
     s.style.animationDelay=(Math.random()*4)+'s';s.style.opacity=(0.2+Math.random()*0.5);
@@ -1356,7 +1356,6 @@ async function processImage(imgEl){
   saveHistory();
 }
 function sparkleBurst(){
-  try{ if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return; }catch(e){}
   const layer=document.createElement('div'); layer.className='sparkle-layer';
   const glyphs=['✦','✧','✩','⋆','✷','✦','·'];
   for(let i=0;i<20;i++){
