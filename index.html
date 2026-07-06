@@ -152,6 +152,35 @@
   .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:12px;letter-spacing:.03em}
   .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle;
     box-shadow:0 0 6px currentColor}
+  /* --- 運勢 --- */
+  .fortune-hero{display:flex;align-items:center;gap:16px;margin:0 0 4px;padding:4px 2px 16px;border-bottom:1px solid var(--line)}
+  .fortune-hero .score{flex:0 0 auto;width:74px;height:74px;border-radius:50%;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;line-height:1;gap:2px;
+    background:radial-gradient(circle at 50% 38%,rgba(217,184,106,.2),rgba(217,184,106,.03) 72%);
+    border:1px solid var(--gold-line);box-shadow:0 0 26px -8px rgba(217,184,106,.5),inset 0 0 16px rgba(217,184,106,.08)}
+  .fortune-hero .score b{font-family:"Cormorant Garamond",serif;font-size:30px;color:var(--gold-soft);font-weight:600}
+  .fortune-hero .score em{font-style:normal;font-size:10px;color:var(--muted);letter-spacing:.14em}
+  .fortune-hero .lead{flex:1}
+  .fortune-hero .lead .t{font-family:"Shippori Mincho",serif;font-size:17px;color:var(--gold-soft);letter-spacing:.06em;margin-bottom:3px}
+  .fortune-hero .lead .d{font-size:12.5px;color:var(--muted);line-height:1.7}
+  .fortune-list{margin-top:16px;display:flex;flex-direction:column;gap:15px}
+  .fitem{display:grid;grid-template-columns:auto 1fr;column-gap:12px;row-gap:5px;align-items:center}
+  .fitem .fico{grid-row:1 / span 2;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-size:18px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.01));border:1px solid var(--line)}
+  .fitem .fh{display:flex;align-items:baseline;gap:8px}
+  .fitem .fname{font-family:"Shippori Mincho",serif;font-size:14.5px;color:var(--ink);letter-spacing:.05em}
+  .fitem .stars{position:relative;font-size:15px;letter-spacing:2px;line-height:1;margin-left:auto;white-space:nowrap}
+  .fitem .stars .base{color:rgba(154,147,192,.32)}
+  .fitem .stars .fill{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;
+    background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--gold);
+    filter:drop-shadow(0 0 5px rgba(217,184,106,.4))}
+  .fitem .fcom{font-size:12.5px;color:var(--muted);line-height:1.65;grid-column:2}
+  .lucky{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .lucky .chip{flex:1 1 auto;min-width:130px;border:1px solid var(--line);border-radius:14px;padding:11px 14px;
+    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.006))}
+  .lucky .chip .k{font-size:10.5px;color:var(--muted);letter-spacing:.12em;margin-bottom:3px}
+  .lucky .chip .v{font-family:"Shippori Mincho",serif;font-size:14.5px;color:var(--gold-soft);display:flex;align-items:center;gap:8px}
+  .lucky .chip .sw{width:14px;height:14px;border-radius:50%;box-shadow:0 0 8px currentColor;border:1px solid rgba(255,255,255,.25)}
   /* --- toggles --- */
   .toggle-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
   .toggle-row .btn{flex:0 1 auto;font-size:13.5px;padding:10px 16px;font-weight:500}
@@ -307,6 +336,13 @@
       <div class="reading" id="overallReading"></div>
       <button class="btn ghost" id="btnAI" style="width:100%;margin-top:6px">✨ AIにさらに詳しく占ってもらう</button>
       <div id="aiOut" class="reading" style="margin-top:12px"></div>
+    </div>
+
+    <div class="panel">
+      <h3 class="panel-h">今日の運勢</h3>
+      <div class="fortune-hero" id="fortuneHero"></div>
+      <div class="fortune-list" id="fortuneList"></div>
+      <div class="lucky" id="luckyRow"></div>
     </div>
 
     <div class="panel">
@@ -666,6 +702,81 @@ function stripPeriod(s){return s.replace(/。$/,'');}
 function curveAxis(k){return {index:'自己主張',middle:'責任感',ring:'表現',pinky:'伝達'}[k]||'その領域';}
 
 /* =====================================================================
+   運勢（実測特徴から手ごとに一定のスコアを算出。娯楽用）
+   ===================================================================== */
+const LUCKY_COLOR={
+  earth:{name:'若草色',hex:'#8FBF6A'}, air:{name:'空色',hex:'#88C0E0'},
+  water:{name:'藍色',hex:'#5B7FC7'}, fire:{name:'朱色',hex:'#E86A5A'}
+};
+const LUCKY_ACTION={
+  earth:'土に触れる・散歩する', air:'本を開く・人と話す',
+  water:'水辺で深呼吸する', fire:'新しい一歩を踏み出す'
+};
+const clamp01=v=>Math.max(0,Math.min(1,v));
+function computeFortune(r){
+  const raw=r.fingerRaw;
+  const sApollo =clamp01(-raw.idxRing*6+0.5);                 // 薬指>人差し指 で高い（金運・表現）
+  const sJupiter=clamp01( raw.idxRing*6+0.5);                 // 人差し指>薬指 で高い（仕事・上昇）
+  const sSaturn =clamp01((raw.saturnRatio-1.0)/0.16+0.5);     // 中指の突出（堅実・責任）
+  const sMercury=clamp01((raw.pinkyReach+0.06)/0.12);         // 小指の伸び（商才・伝達）
+  const sStraight=clamp01((r.straightAvg-T.straightCurved)/(T.straightStraight-T.straightCurved));
+  const sSoft=1-sStraight;
+  const sOpen=clamp01((r.gapAvg-T.gapClosed)/(T.gapOpen-T.gapClosed));
+  const sThumb=clamp01((r.thumbAngle-20)/50);
+  const el=r.element;
+  const eb=(e,map)=>map[e]||0;
+  const money = clamp01(sApollo*0.38+sMercury*0.38+sThumb*0.12+eb(el,{earth:.14,air:.08,water:.02,fire:.04})+0.02);
+  const love  = clamp01(sThumb*0.34+sOpen*0.26+sSoft*0.24+eb(el,{water:.14,fire:.10,air:.04,earth:.02}));
+  const work  = clamp01(sJupiter*0.34+sSaturn*0.34+sStraight*0.24+eb(el,{earth:.10,fire:.08,air:.06,water:.02}));
+  const health= clamp01(sStraight*0.30+sOpen*0.28+sThumb*0.16+eb(el,{earth:.14,fire:.06,air:.04,water:.06})+0.04);
+  const overall=(money+love+work+health)/4;
+  const toStars=v=>Math.round((1+clamp01(v)*4)*2)/2; // 1.0〜5.0（0.5刻み）
+  return {
+    overall:toStars(overall),
+    items:[
+      {key:'金運',ico:'♱',icoText:'💰',score:toStars(money)},
+      {key:'恋愛運',ico:'♡',icoText:'💗',score:toStars(love)},
+      {key:'仕事運',ico:'☼',icoText:'🎯',score:toStars(work)},
+      {key:'健康運',ico:'✦',icoText:'🌿',score:toStars(health)}
+    ]
+  };
+}
+function fortuneComment(key,stars){
+  const tier=stars>=4.5?'top':stars>=3.5?'high':stars>=2.5?'mid':'low';
+  const C={
+    '金運':{top:'金運は満ちています。大きな決断も追い風に。',high:'お金の巡りは良好。堅実な一手が実を結びます。',mid:'収支は穏やか。小さな節約が後で効いてきます。',low:'守りの時期。焦らず土台を整えると流れが変わります。'},
+    '恋愛運':{top:'心が大きく開き、縁が近づく気配。素直さが鍵。',high:'あたたかな出会いや進展の予感。笑顔を大切に。',mid:'ゆるやかな安定期。相手の話に耳を傾けて。',low:'いまは自分を満たす時。無理せず自然体で。'},
+    '仕事運':{top:'集中と推進力が高まる好機。挑戦が評価に。',high:'着実に前進できる時。丁寧さが信頼を生みます。',mid:'平常運転。ひとつずつ片づけると波に乗れます。',low:'充電の時期。準備と学びが次の飛躍につながります。'},
+    '健康運':{top:'心身ともに好調。活力を人にも分けられそう。',high:'コンディション良好。生活のリズムを大切に。',mid:'まずまず安定。休息を意識するとさらに整います。',low:'少し労わりを。早めの休息と水分をこまめに。'}
+  };
+  return (C[key]||{})[tier]||'';
+}
+function starsHTML(score){
+  const pct=(score/5)*100;
+  return `<span class="stars"><span class="base">★★★★★</span><span class="fill" style="width:${pct}%">★★★★★</span></span>`;
+}
+function renderFortune(r){
+  const f=computeFortune(r); r._fortune=f;
+  const el=EL[r.element];
+  const tierWord=f.overall>=4.5?'絶好調':f.overall>=3.5?'good day':f.overall>=2.5?'穏やか':'養生の日';
+  $('fortuneHero').innerHTML=`
+    <div class="score"><b>${f.overall.toFixed(1)}</b><em>/ 5.0</em></div>
+    <div class="lead"><div class="t">総合運 ・ ${el.name}</div>
+      <div class="d">${starsHTML(f.overall)} <span style="margin-left:6px">${tierWord}</span></div></div>`;
+  $('fortuneList').innerHTML=f.items.map(it=>`
+    <div class="fitem">
+      <div class="fico">${it.icoText}</div>
+      <div class="fh"><span class="fname">${it.key}</span>${starsHTML(it.score)}</div>
+      <div class="fcom">${fortuneComment(it.key,it.score)}</div>
+    </div>`).join('');
+  const lc=LUCKY_COLOR[r.element];
+  $('luckyRow').innerHTML=`
+    <div class="chip"><div class="k">LUCKY COLOR</div>
+      <div class="v"><span class="sw" style="background:${lc.hex};color:${lc.hex}"></span>${lc.name}</div></div>
+    <div class="chip"><div class="k">LUCKY ACTION</div><div class="v">${LUCKY_ACTION[r.element]}</div></div>`;
+}
+
+/* =====================================================================
    表示 showReading
    ===================================================================== */
 function showReading(idx){
@@ -681,6 +792,9 @@ function showReading(idx){
   const ov=buildOverall(r);
   $('overallReading').innerHTML=`<p>${ov.p1}</p><p>${ov.p2}</p>`;
   r._overall=ov;
+
+  // 運勢
+  renderFortune(r);
 
   // fingers grid
   const fg=$('fingersGrid'); fg.innerHTML='';
@@ -1158,7 +1272,9 @@ $('btnShareImg').onclick=async()=>{
 };
 $('btnShareText').onclick=async()=>{
   const r=currentHands[activeHand]; const ov=r._overall||buildOverall(r);
-  const text=`【手相鑑定】${EL[r.element].name}\n\n${ov.p1}\n\n${ov.p2}\n\n― 手のひらの星図で占いました`;
+  const f=r._fortune||computeFortune(r);
+  const fline=`総合運 ${f.overall.toFixed(1)}／5　`+f.items.map(it=>`${it.key} ${it.score.toFixed(1)}`).join('・');
+  const text=`【手相鑑定】${EL[r.element].name}\n\n${ov.p1}\n\n${ov.p2}\n\n【今日の運勢】\n${fline}\n\n― 手のひらの星図で占いました`;
   if(navigator.share){ try{ await navigator.share({text}); return; }catch(e){} }
   try{ await navigator.clipboard.writeText(text); toast('コピーしました'); }
   catch(e){ toast('コピーできませんでした'); }
