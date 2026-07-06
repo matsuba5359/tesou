@@ -1,0 +1,1236 @@
+
+Tesou · HTML
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>手のひらの星図 — 手相占い</title>
+<meta name="theme-color" content="#080714" />
+<meta name="color-scheme" content="dark" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="手のひらの星図" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --night:#080714; --night2:#0E0B22;
+    --panel-a:#1a1638; --panel-b:#13102b;
+    --gold:#D9B86A; --gold-soft:#EBD8A6; --gold-deep:#B9954F; --gold-line:rgba(217,184,106,.28);
+    --star:#F4EFFF;
+    --ink:#ECE8FB; --ink-dim:#C8C2E6; --muted:#9A93C0; --faint:#6E679A;
+    --line:rgba(140,124,214,.16); --line-strong:rgba(160,142,224,.26);
+    --heart:#E8799F; --head:#E9C46A; --life:#7FC8C0; --other:#8A84B8;
+    --radius:20px;
+    --shadow:0 20px 50px -18px rgba(0,0,0,.75), 0 2px 10px rgba(0,0,0,.35);
+    --gold-grad:linear-gradient(135deg,#F4E3B4 0%,#D9B86A 42%,#B9954F 72%,#E7CE93 100%);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1100px 700px at 50% -8%, #241d4d 0%, rgba(20,16,44,0) 60%),
+      radial-gradient(900px 900px at 88% 12%, rgba(93,74,168,.18) 0%, rgba(0,0,0,0) 55%),
+      radial-gradient(1000px 1000px at 6% 88%, rgba(56,120,120,.12) 0%, rgba(0,0,0,0) 55%),
+      linear-gradient(180deg,var(--night2) 0%, var(--night) 100%) fixed;
+    background-color:var(--night);
+    color:var(--ink);
+    font-family:"Zen Kaku Gothic New",system-ui,sans-serif;
+    line-height:1.75; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    min-height:100vh;
+  }
+  .stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .stars-bg i{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--star);opacity:.5;
+    box-shadow:0 0 6px 1px rgba(244,239,255,.5);animation:tw 5s ease-in-out infinite}
+  @keyframes tw{0%,100%{opacity:.12;transform:scale(.8)}50%{opacity:.75;transform:scale(1.1)}}
+  @media (prefers-reduced-motion:reduce){.stars-bg i{animation:none}}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:30px 20px 90px}
+  h1,h2,h3{font-family:"Shippori Mincho",serif;font-weight:600;letter-spacing:.03em}
+  /* --- header --- */
+  .title{text-align:center;margin:12px 0 2px}
+  .title .kanji{display:inline-block;font-size:40px;letter-spacing:.2em;font-weight:700;padding-left:.2em;
+    background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--gold);
+    filter:drop-shadow(0 2px 14px rgba(217,184,106,.28))}
+  .title .en{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--gold-soft);opacity:.72;
+    font-size:16px;letter-spacing:.34em;margin-top:8px;text-transform:uppercase}
+  .ornament{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--gold);opacity:.75;margin:16px 0 10px;font-size:13px}
+  .ornament span{height:1px;width:64px;max-width:22vw;
+    background:linear-gradient(90deg,transparent,var(--gold-line),transparent)}
+  .ornament b{letter-spacing:.4em;font-weight:400}
+  .sub{text-align:center;color:var(--muted);font-size:13.5px;letter-spacing:.06em;margin:0 0 26px;font-family:"Shippori Mincho",serif}
+  /* --- panel --- */
+  .panel{position:relative;background:
+      linear-gradient(180deg,var(--panel-a) 0%, var(--panel-b) 100%);
+    border:1px solid var(--line-strong);border-radius:var(--radius);padding:22px 20px;margin:16px 0;
+    box-shadow:var(--shadow)}
+  .panel::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06), inset 0 0 0 1px rgba(255,255,255,.015)}
+  .panel::after{content:"";position:absolute;left:22px;right:22px;top:0;height:1px;pointer-events:none;
+    background:linear-gradient(90deg,transparent,var(--gold-line),transparent)}
+  .panel-h{font-family:"Shippori Mincho",serif;font-size:15px;letter-spacing:.08em;color:var(--gold-soft);
+    margin:0 0 14px;display:flex;align-items:center;gap:9px}
+  .panel-h::before{content:"✦";font-size:11px;color:var(--gold);opacity:.85}
+  /* --- buttons --- */
+  .btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+    font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:15px;letter-spacing:.03em;
+    border-radius:14px;border:1px solid var(--line-strong);padding:14px 20px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,0));color:var(--ink);
+    transition:transform .12s ease,border-color .25s,box-shadow .25s,background .25s;
+    -webkit-tap-highlight-color:transparent}
+  .btn:hover{border-color:var(--gold-line);box-shadow:0 6px 18px -8px rgba(217,184,106,.4);transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn.primary{background:var(--gold-grad);color:#2a2008;border:1px solid rgba(255,240,200,.5);font-weight:700;
+    box-shadow:0 10px 26px -10px rgba(217,184,106,.65), inset 0 1px 0 rgba(255,255,255,.55)}
+  .btn.primary:hover{box-shadow:0 14px 30px -10px rgba(217,184,106,.8), inset 0 1px 0 rgba(255,255,255,.6);transform:translateY(-1px)}
+  .btn.ghost{background:transparent}
+  .btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .btnrow{display:flex;gap:12px;flex-wrap:wrap}
+  .btnrow .btn{flex:1 1 auto;min-width:140px}
+  .hint{color:var(--muted);font-size:13.5px;letter-spacing:.02em}
+  .mono{font-family:"Space Mono",monospace;letter-spacing:0}
+  details{border:1px solid var(--line);border-radius:16px;padding:0 16px;margin:14px 0;
+    background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.005))}
+  details summary{cursor:pointer;font-weight:700;padding:14px 0;color:var(--gold-soft);list-style:none;letter-spacing:.04em;
+    font-family:"Shippori Mincho",serif;font-size:14.5px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"✦";color:var(--gold);margin-right:9px;font-size:11px}
+  details[open] summary::before{content:"✧"}
+  .center{text-align:center}
+  .hidden{display:none !important}
+  canvas{max-width:100%;display:block}
+  /* --- meters --- */
+  .meter{margin:16px 0}
+  .meter .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-dim);margin-bottom:9px;letter-spacing:.03em}
+  .meter .lab .mono{color:var(--gold-soft);font-size:12px}
+  .track{position:relative;height:6px;border-radius:99px;
+    background:linear-gradient(90deg,rgba(122,105,190,.14),rgba(122,105,190,.06));
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.5);overflow:visible}
+  .track .bound{position:absolute;top:-5px;bottom:-5px;width:1px;background:var(--gold);opacity:.55}
+  .track .bound::after{content:"";position:absolute;top:-3px;left:-1.5px;width:4px;height:4px;border-radius:50%;
+    background:var(--gold);opacity:.7;transform:rotate(45deg)}
+  .track .dot{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 35% 30%,#fff,var(--gold-soft) 55%,var(--gold-deep));
+    box-shadow:0 0 12px 2px rgba(235,216,166,.6),0 0 0 4px rgba(217,184,106,.14)}
+  .ends{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);margin-top:7px;letter-spacing:.05em}
+  /* --- reading --- */
+  .reading{font-family:"Shippori Mincho",serif;font-size:16.5px;line-height:2.05;color:#F5F1FF;letter-spacing:.02em}
+  .reading p{margin:0 0 16px;text-align:justify}
+  .reading p:last-child{margin-bottom:0}
+  #aiOut:not(:empty){border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
+  #aiOut .hint{font-family:"Zen Kaku Gothic New",sans-serif}
+  /* --- element badge --- */
+  .element-badge{display:flex;align-items:center;gap:16px;margin:2px 0 18px;padding-bottom:18px;
+    border-bottom:1px solid var(--line)}
+  .element-badge .glyph{position:relative;font-family:"Shippori Mincho",serif;font-size:38px;flex:0 0 auto;
+    width:70px;height:70px;display:flex;align-items:center;justify-content:center;border-radius:50%;
+    color:var(--gold-soft);background:radial-gradient(circle at 50% 40%,rgba(217,184,106,.16),rgba(217,184,106,.02) 70%);
+    border:1px solid var(--gold-line);box-shadow:0 0 24px -6px rgba(217,184,106,.4), inset 0 0 18px rgba(217,184,106,.08)}
+  .element-badge .glyph::after{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(217,184,106,.18)}
+  .element-badge .el-name{font-family:"Shippori Mincho",serif;font-size:22px;color:var(--gold-soft);letter-spacing:.08em}
+  .element-badge .el-en{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--muted);font-size:15px;letter-spacing:.14em;text-transform:uppercase}
+  /* --- fingers --- */
+  .fingers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  @media (max-width:480px){.fingers{grid-template-columns:1fr}}
+  .finger-card{position:relative;border:1px solid var(--line);border-radius:16px;padding:16px 15px;
+    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.006));overflow:hidden}
+  .finger-card .top{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+  .finger-card .planet{flex:0 0 auto;width:36px;height:36px;border-radius:50%;font-size:19px;line-height:1;
+    display:flex;align-items:center;justify-content:center;color:var(--gold-soft);
+    background:radial-gradient(circle at 40% 35%,rgba(217,184,106,.2),rgba(217,184,106,.03));
+    border:1px solid var(--gold-line);box-shadow:inset 0 0 10px rgba(217,184,106,.1)}
+  .finger-card .fname{font-family:"Shippori Mincho",serif;font-size:14.5px;color:var(--gold-soft);letter-spacing:.03em;line-height:1.4}
+  .finger-card .verdict{font-family:"Space Mono",monospace;font-size:10.5px;color:var(--muted);margin-left:auto;
+    padding:3px 9px;border:1px solid var(--line-strong);border-radius:99px;letter-spacing:.06em;white-space:nowrap}
+  .finger-card .desc{font-size:13.5px;color:var(--ink-dim);line-height:1.75}
+  /* --- data row --- */
+  .datarow{display:flex;flex-wrap:wrap;gap:9px 10px;margin-top:16px}
+  .datarow span{font-family:"Space Mono",monospace;font-size:11.5px;color:var(--gold-soft);
+    padding:5px 11px;border:1px solid var(--line);border-radius:99px;
+    background:rgba(217,184,106,.04);letter-spacing:.02em}
+  .datarow span b{color:var(--faint);font-weight:400;margin-right:5px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:12px;letter-spacing:.03em}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle;
+    box-shadow:0 0 6px currentColor}
+  /* --- toggles --- */
+  .toggle-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+  .toggle-row .btn{flex:0 1 auto;font-size:13.5px;padding:10px 16px;font-weight:500}
+  .toggle-row .btn.active{background:var(--gold-grad);color:#2a2008;border-color:rgba(255,240,200,.5);font-weight:700;
+    box-shadow:0 8px 20px -10px rgba(217,184,106,.6),inset 0 1px 0 rgba(255,255,255,.5)}
+  .foot{color:var(--muted);font-size:12px;line-height:1.85;letter-spacing:.02em}
+  .foot p{margin:0 0 10px}.foot p:last-child{margin-bottom:0}
+  .foot b{color:var(--gold-soft);font-weight:700}
+  .slider-row{display:flex;align-items:center;gap:12px;margin:14px 0;font-size:12.5px;color:var(--ink-dim);letter-spacing:.03em}
+  .slider-row input[type=range]{flex:1;accent-color:var(--gold);height:4px}
+  .slider-row .val{font-family:"Space Mono",monospace;color:var(--gold-soft);min-width:52px;text-align:right}
+  /* --- thumbs --- */
+  .thumbs{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 8px;scrollbar-width:thin}
+  .thumbs .th{flex:0 0 auto;width:88px;text-align:center;cursor:pointer;transition:transform .18s ease}
+  .thumbs .th:hover{transform:translateY(-3px)}
+  .thumbs .th img{width:88px;height:88px;object-fit:cover;border-radius:14px;border:1px solid var(--gold-line);
+    box-shadow:0 8px 20px -10px rgba(0,0,0,.7)}
+  .thumbs .th .cap{font-family:"Shippori Mincho",serif;font-size:12px;color:var(--gold-soft);margin-top:7px;letter-spacing:.05em}
+  /* --- modal --- */
+  .modal{position:fixed;inset:0;background:rgba(5,4,14,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.modal{animation:none}}
+  .modal .box{max-width:540px;width:100%;max-height:90vh;overflow:auto}
+  .spinner{width:22px;height:22px;border:2.5px solid var(--line-strong);border-top-color:var(--gold);border-radius:50%;
+    animation:spin 1s linear infinite;display:inline-block;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.spinner{animation:none}}
+  .status{font-size:13.5px;color:var(--muted);text-align:center;padding:10px 0;letter-spacing:.02em}
+  .imgcap{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--gold-line);background:#0c0a1e;
+    box-shadow:0 14px 40px -18px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.03)}
+  .imgcap canvas{width:100%}
+  a.link{color:var(--gold-soft)}
+  input[type=file]{display:none}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold-line),transparent);margin:18px 0;border:0}
+  .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);
+    background:linear-gradient(180deg,var(--panel-a),var(--panel-b));
+    border:1px solid var(--gold-line);color:var(--ink);padding:12px 22px;border-radius:14px;z-index:60;font-size:14px;
+    letter-spacing:.04em;box-shadow:0 16px 40px -12px rgba(0,0,0,.7)}
+  ::selection{background:rgba(217,184,106,.28);color:#fff}
+ 
+  /* =====================================================================
+     アプリシェル（スマホアプリ風）
+     ===================================================================== */
+  html{-webkit-text-size-adjust:100%}
+  body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent}
+  /* UIチップは選択させない（本文は選択可） */
+  .appbar,.btn,.toggle-row,.legend,.datarow,.meter .ends,.finger-card .verdict,.ornament,.thumbs{
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  /* --- 端末幅レイアウト --- */
+  .wrap{max-width:460px;padding:16px 16px calc(28px + env(safe-area-inset-bottom))}
+  /* --- 固定アプリバー --- */
+  .appbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:6px;
+    height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 10px 0;
+    background:linear-gradient(180deg,rgba(12,10,26,.86),rgba(12,10,26,.66));
+    backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);
+    border-bottom:1px solid var(--line)}
+  .appbar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold-line),transparent)}
+  .appbar-brand{flex:1;text-align:center;font-family:"Shippori Mincho",serif;font-weight:600;
+    font-size:16px;letter-spacing:.16em;padding-left:.16em;
+    background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--gold)}
+  .appbar-back,.appbar-spacer{width:38px;height:38px;flex:0 0 auto}
+  .appbar-back{display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;
+    color:var(--gold-soft);background:rgba(255,255,255,.05);border:1px solid var(--line);
+    opacity:0;pointer-events:none;transform:translateX(-6px);transition:opacity .25s,transform .25s}
+  body.result-active .appbar-back{opacity:1;pointer-events:auto;transform:none}
+  .appbar-back:active{transform:scale(.9)}
+  /* 結果画面では大きなヒーロー見出しを隠し、アプリバーに集約 */
+  body.result-active .title,body.result-active .ornament,body.result-active .sub{display:none}
+  /* --- 押下フィードバック（アプリ的） --- */
+  .btn:active{transform:scale(.97)}
+  .thumbs .th:active{transform:scale(.95)}
+  /* --- セグメンテッド・コントロール（iOS風トグル） --- */
+  .toggle-row{gap:0;padding:4px;border-radius:14px;background:rgba(122,105,190,.1);
+    border:1px solid var(--line);box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+  .toggle-row .btn{flex:1 1 0;border:0;background:transparent;box-shadow:none;border-radius:11px;
+    padding:11px 10px;color:var(--muted);font-weight:600;transition:color .2s,background .25s,box-shadow .25s}
+  .toggle-row .btn:hover{transform:none;box-shadow:none;color:var(--ink-dim)}
+  .toggle-row .btn.active{color:#2a2008;box-shadow:0 3px 10px -3px rgba(217,184,106,.55),inset 0 1px 0 rgba(255,255,255,.5)}
+  .toggle-row .btn:active{transform:scale(.97)}
+  #handToggle{margin-top:2px}
+  /* --- ボトムシート・モーダル --- */
+  .modal{align-items:flex-end}
+  @media (min-width:520px){.modal{align-items:center}}
+  .modal .box{max-height:88vh;border-radius:24px 24px 0 0;position:relative;
+    padding-bottom:calc(20px + env(safe-area-inset-bottom));
+    animation:sheet .32s cubic-bezier(.2,.8,.2,1)}
+  @media (min-width:520px){.modal .box{border-radius:24px}}
+  .modal .box::before{content:"";position:absolute;top:9px;left:50%;transform:translateX(-50%);
+    width:40px;height:4px;border-radius:99px;background:var(--line-strong)}
+  @keyframes sheet{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+  @media (prefers-reduced-motion:reduce){.modal .box{animation:none}}
+  /* --- 画面遷移（フェード＋スライド） --- */
+  #viewResult:not(.hidden),#viewTop:not(.hidden){animation:viewIn .32s cubic-bezier(.2,.8,.2,1)}
+  @keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){#viewResult,#viewTop{animation:none}}
+  /* --- ヒーロー微調整（トップのみ） --- */
+  .title{margin-top:6px}
+  .title .kanji{font-size:36px}
+</style>
+</head>
+<body>
+<div class="stars-bg" id="starsBg" aria-hidden="true"></div>
+<header class="appbar" id="appbar">
+  <button class="appbar-back" id="appBack" aria-label="戻る" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="appbar-brand">手のひらの星図</div>
+  <div class="appbar-spacer" aria-hidden="true"></div>
+</header>
+<div class="wrap">
+  <div class="title">
+    <div class="kanji">手のひらの星図</div>
+    <div class="en">Star Chart of the Palm</div>
+  </div>
+  <div class="ornament" aria-hidden="true"><span></span><b>✦ ✧ ✦</b><span></span></div>
+  <div class="sub">手のひらの写真から、あなたという星座を読み解きます</div>
+ 
+  <!-- ============ TOP / INPUT ============ -->
+  <section id="viewTop">
+    <div class="panel">
+      <div class="btnrow">
+        <button class="btn primary" id="btnPick">📷 写真を選ぶ</button>
+        <button class="btn" id="btnCam">🎥 カメラで撮る</button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" />
+      <p class="hint center" style="margin:12px 0 0">正面から・指を軽く開いて・明るい場所で撮ると、よく読めます。</p>
+      <div id="topStatus" class="status"></div>
+    </div>
+ 
+    <details>
+      <summary>使い方とコツ</summary>
+      <div class="foot" style="padding-bottom:14px">
+        <p><b>きれいに写すコツ</b><br>手のひらを正面に向け、指を軽く開きます。明るい場所で、影が落ちないように。背景はできるだけシンプルに。手のひら全体が枠に入るように写してください。</p>
+        <p><b>結果の見かた</b><br>「四大分類」で手の型を、「4本の指」で性格の軸を、「間隔と反り」で心の構えを、「総合鑑定」でそれらを織り合わせて読みます。「実際のしわ」では、写真から実際の掌線を抽出して重ねます。</p>
+        <p><b>プライバシー</b><br>手の検出・しわの抽出は、すべてこのブラウザの中だけで処理され、写真はどこにも送られません。AI鑑定を使うときだけ、測定した特徴（写真ではなく<b>文字データ</b>）が送られます。</p>
+      </div>
+    </details>
+ 
+    <div class="panel" id="historyPanel" style="display:none">
+      <h3 class="panel-h">これまでの鑑定</h3>
+      <div class="thumbs" id="historyThumbs"></div>
+    </div>
+  </section>
+ 
+  <!-- ============ RESULT ============ -->
+  <section id="viewResult" class="hidden">
+    <div class="toggle-row" id="handToggle" style="display:none"></div>
+ 
+    <div class="panel">
+      <div class="element-badge" id="elBadge"></div>
+      <div class="reading" id="overallReading"></div>
+      <button class="btn ghost" id="btnAI" style="width:100%;margin-top:6px">✨ AIにさらに詳しく占ってもらう</button>
+      <div id="aiOut" class="reading" style="margin-top:12px"></div>
+    </div>
+ 
+    <div class="panel">
+      <h3 class="panel-h">手のひらの星図</h3>
+      <div class="imgcap"><canvas id="palmCanvas"></canvas></div>
+      <div class="toggle-row" style="margin-top:10px">
+        <button class="btn active" id="btnRef">参考ライン</button>
+        <button class="btn" id="btnCrease">実際のしわ</button>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="datarow" id="dataRow"></div>
+      <details id="creaseSettings" style="margin-top:12px">
+        <summary>しわ検出の詳細設定</summary>
+        <div style="padding-bottom:12px">
+          <div class="slider-row">線の太さ
+            <input type="range" id="slKernel" min="0.015" max="0.060" step="0.001" />
+            <span class="val mono" id="valKernel"></span></div>
+          <div class="slider-row">感度
+            <input type="range" id="slThresh" min="0.6" max="1.4" step="0.02" />
+            <span class="val mono" id="valThresh"></span></div>
+          <p class="foot">スライダーを動かすと、少し待ってから自動で再解析します。触らなければ既定のままです。</p>
+        </div>
+      </details>
+    </div>
+ 
+    <div class="panel">
+      <h3 class="panel-h">4本の指 — 星々の対応</h3>
+      <div class="fingers" id="fingersGrid"></div>
+    </div>
+ 
+    <div class="panel">
+      <h3 class="panel-h">指の反りと開き</h3>
+      <div id="postureMeters"></div>
+      <div class="reading" id="postureText" style="font-size:15px;margin-top:10px"></div>
+    </div>
+ 
+    <div class="panel">
+      <h3 class="panel-h">三大線について</h3>
+      <div class="foot" id="linesExplain"></div>
+    </div>
+ 
+    <div class="panel">
+      <div class="btnrow">
+        <button class="btn primary" id="btnSaveImg">🖼 画像で保存</button>
+        <button class="btn" id="btnShareImg">📤 画像を共有</button>
+      </div>
+      <div class="btnrow" style="margin-top:10px">
+        <button class="btn" id="btnShareText">📝 テキストで共有</button>
+        <button class="btn ghost" id="btnAgain">↺ もう一度占う</button>
+      </div>
+    </div>
+ 
+    <div class="panel">
+      <div class="foot" id="footnotes"></div>
+    </div>
+  </section>
+</div>
+ 
+<script type="module">
+/* =====================================================================
+   手のひらの星図 — self-contained palm reading
+   ===================================================================== */
+ 
+/* ---------- 7. 調整可能パラメータ（実写真に合わせて調整可） ---------- */
+const T = {
+  // 四大分類のしきい値
+  palmBoundary: 1.40,   // 手のひら aspect(縦/横) の境界: これ未満=四角い / 以上=細長い
+  palmMin: 1.05, palmMax: 1.80,       // メーター表示レンジ
+  fingerBoundary: 0.76, // 中指長/手のひら長 の境界: 以上=指が長い
+  fingerMin: 0.60, fingerMax: 0.92,   // メーター表示レンジ
+  nearBoundary: 0.05,   // 境界からこの範囲内なら「隣の型も混じる」と付記(正規化)
+  // 指の判定
+  idxRingBand: 0.02,    // 木星(人差し)vs太陽(薬指): 差の許容帯（標準扱い）
+  saturnLong: 1.11, saturnShort: 1.05, // 土星(中指)突出度
+  pinkyLong: 0.00, pinkyShort: -0.045, // 水星(小指)先端の届き（掌長で正規化）
+  // 間隔（開き）
+  gapOpen: 16, gapClosed: 8,           // 手全体の平均角(度)
+  gapWideRatio: 1.22, gapNarrowRatio: 0.78, // 各間隔の自己平均比
+  // 反り
+  straightStraight: 0.978, straightCurved: 0.955, // chord/arc 平均
+  thumbOpen: 48        // 親指がこの角度(度)以上開けば寛容さ
+};
+const CREASE = {
+  kernelScale: 0.030,  // ブラックハット楕円カーネル比 (0.015〜0.060)
+  threshBias: 1.00,    // Otsu感度倍率 (1.4=厳しめ〜0.6=拾いすぎ)
+  step: 2,             // 走査ステップ(px)
+  procW: 640,          // 処理縮小幅
+  nearLine: 0.03       // 参考カーブへの近さ閾値(正規化)
+};
+ 
+/* ---------- 保存層: window.storage → localStorage → memory ---------- */
+const Store = (()=>{
+  const KEY='tesou_history';
+  let mem=null;
+  function tryWinStorage(op){
+    try{ if(window.storage && typeof window.storage.getItem==='function') return op(window.storage); }catch(e){}
+    return undefined;
+  }
+  function tryLocal(op){
+    try{ if(window.localStorage){ return op(window.localStorage); } }catch(e){}
+    return undefined;
+  }
+  function read(){
+    let raw;
+    raw=tryWinStorage(s=>s.getItem(KEY)); if(raw!==undefined&&raw!==null) return parse(raw);
+    raw=tryLocal(s=>s.getItem(KEY)); if(raw!==undefined&&raw!==null) return parse(raw);
+    return mem?parse(mem):[];
+  }
+  function parse(r){ try{ return JSON.parse(r)||[]; }catch(e){ return []; } }
+  function write(arr){
+    const raw=JSON.stringify(arr);
+    let ok=false;
+    if(tryWinStorage(s=>{s.setItem(KEY,raw);return true;})) ok=true;
+    if(!ok && tryLocal(s=>{s.setItem(KEY,raw);return true;})) ok=true;
+    mem=raw; // 常にメモリにも保持
+  }
+  return {read,write};
+})();
+ 
+/* ---------- DOM refs ---------- */
+const $=id=>document.getElementById(id);
+const viewTop=$('viewTop'), viewResult=$('viewResult');
+let currentHands=[];   // computed readings per hand
+let activeHand=0;
+let creaseMode=false;  // false=参考ライン true=実際のしわ
+ 
+/* ---------- starfield ---------- */
+(function(){
+  const bg=$('starsBg'); const n=window.matchMedia('(prefers-reduced-motion:reduce)').matches?0:40;
+  for(let i=0;i<n;i++){const s=document.createElement('i');
+    s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
+    s.style.animationDelay=(Math.random()*4)+'s';s.style.opacity=(0.2+Math.random()*0.5);
+    bg.appendChild(s);}
+})();
+ 
+/* =====================================================================
+   MediaPipe HandLandmarker (lazy)
+   ===================================================================== */
+let handLandmarker=null, hlLoading=null;
+async function getHandLandmarker(){
+  if(handLandmarker) return handLandmarker;
+  if(hlLoading) return hlLoading;
+  hlLoading=(async()=>{
+    const vision=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14');
+    const {HandLandmarker,FilesetResolver}=vision;
+    const resolver=await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+    handLandmarker=await HandLandmarker.createFromOptions(resolver,{
+      baseOptions:{
+        modelAssetPath:'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+        delegate:'GPU'
+      },
+      runningMode:'IMAGE', numHands:2
+    });
+    return handLandmarker;
+  })();
+  return hlLoading;
+}
+ 
+/* =====================================================================
+   Geometry helpers （正規化座標 0..1 を基本）
+   ===================================================================== */
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function vecAngle(u,v){
+  const d=(u.x*v.x+u.y*v.y)/((Math.hypot(u.x,u.y)*Math.hypot(v.x,v.y))||1e-9);
+  return Math.acos(Math.max(-1,Math.min(1,d)))*180/Math.PI;
+}
+function sub(a,b){return {x:a.x-b.x,y:a.y-b.y};}
+// finger chains for arc/chord
+const CHAINS={index:[5,6,7,8],middle:[9,10,11,12],ring:[13,14,15,16],pinky:[17,18,19,20],thumb:[1,2,3,4]};
+function arcLen(lm,ch){let s=0;for(let i=1;i<ch.length;i++)s+=dist(lm[ch[i]],lm[ch[i-1]]);return s;}
+function chordLen(lm,ch){return dist(lm[ch[0]],lm[ch[ch.length-1]]);}
+function fingerDir(lm,ch){return sub(lm[ch[ch.length-1]],lm[ch[0]]);} // base->tip
+ 
+/* =====================================================================
+   4.x  computeReading — 1手ぶんの鑑定を計算（表示から分離）
+   ===================================================================== */
+function computeReading(lm, handedness){
+  const wrist=lm[0];
+  const palmLen=dist(lm[0],lm[9]);
+  const palmWid=dist(lm[5],lm[17]);
+  const aspect=palmLen/palmWid;
+  const midLen=dist(lm[9],lm[12]);
+  const idxLen=dist(lm[5],lm[8]);
+  const ringLen=dist(lm[13],lm[16]);
+  const fingerRatio=midLen/palmLen;
+ 
+  const square=aspect<T.palmBoundary;
+  const longFingers=fingerRatio>=T.fingerBoundary;
+  // マッピング: 地=四角い+短い / 風=四角い+長い / 水=細長い+長い / 火=細長い+短い
+  let element;
+  if(square && !longFingers) element='earth';
+  else if(square && longFingers) element='air';
+  else if(!square && longFingers) element='water';
+  else element='fire';
+ 
+  // 境界の近さ（型が混じるか）
+  const palmNear=Math.abs(aspect-T.palmBoundary)<= (T.palmMax-T.palmMin)*T.nearBoundary;
+  const fingerNear=Math.abs(fingerRatio-T.fingerBoundary)<= (T.fingerMax-T.fingerMin)*T.nearBoundary;
+  const nearBoundary=palmNear||fingerNear;
+ 
+  /* ---- fingers (planets) ---- */
+  const mean3=(idxLen+midLen+ringLen)/3;
+  // 木星: 人差し vs 薬指
+  const idxRing=(idxLen-ringLen)/mean3;
+  let jupiter = idxRing>T.idxRingBand?'long':(idxRing<-T.idxRingBand?'short':'std');
+  // 太陽: 木星の逆（薬指>人差し指で長い）
+  let apollo = idxRing<-T.idxRingBand?'long':(idxRing>T.idxRingBand?'short':'std');
+  // 土星: 中指の突出度
+  const saturnRatio=midLen/((idxLen+ringLen)/2);
+  let saturn = saturnRatio>T.saturnLong?'long':(saturnRatio<T.saturnShort?'short':'std');
+  // 水星: 小指先端(20)が薬指第一関節(15)へ届くか、掌の縦軸へ投影
+  const axis=sub(lm[9],lm[0]); const axLen=Math.hypot(axis.x,axis.y)||1e-9;
+  const ux={x:axis.x/axLen,y:axis.y/axLen};
+  const proj=p=>((p.x-lm[0].x)*ux.x+(p.y-lm[0].y)*ux.y);
+  const pinkyReach=(proj(lm[20])-proj(lm[15]))/palmLen; // 正: 届いて超える
+  let mercury = pinkyReach>=T.pinkyLong?'long':(pinkyReach<T.pinkyShort?'short':'std');
+ 
+  /* ---- 間隔（開き） ---- */
+  const dI=fingerDir(lm,CHAINS.index), dM=fingerDir(lm,CHAINS.middle),
+        dR=fingerDir(lm,CHAINS.ring), dP=fingerDir(lm,CHAINS.pinky);
+  const gapIM=vecAngle(dI,dM), gapMR=vecAngle(dM,dR), gapRP=vecAngle(dR,dP);
+  const gapAvg=(gapIM+gapMR+gapRP)/3;
+  const relGap=g=> g>gapAvg*T.gapWideRatio?'wide':(g<gapAvg*T.gapNarrowRatio?'narrow':'std');
+  const gaps={IM:relGap(gapIM),MR:relGap(gapMR),RP:relGap(gapRP)};
+  const handOpen = gapAvg>T.gapOpen?'open':(gapAvg<T.gapClosed?'closed':'std');
+ 
+  // 親指の開き
+  const thumbDir=fingerDir(lm,CHAINS.thumb);
+  const thumbAngle=vecAngle(thumbDir, sub(lm[9],lm[0]));
+  const thumbWide=thumbAngle>T.thumbOpen;
+ 
+  /* ---- 反り（chord/arc） ---- */
+  const straightness={};
+  ['index','middle','ring','pinky'].forEach(k=>{
+    const a=arcLen(lm,CHAINS[k]); straightness[k]= a>0? chordLen(lm,CHAINS[k])/a : 1;
+  });
+  const straightAvg=(straightness.index+straightness.middle+straightness.ring+straightness.pinky)/4;
+  const posture = straightAvg>T.straightStraight?'straight':(straightAvg<T.straightCurved?'curved':'std');
+  // 最も曲がった指
+  let mostCurved=null,minS=1;
+  for(const k of ['index','middle','ring','pinky']) if(straightness[k]<minS){minS=straightness[k];mostCurved=k;}
+ 
+  /* ---- handedness label ---- */
+  let handLabel='手';
+  if(handedness && handedness[0]){
+    const cat=handedness[0].categoryName||handedness[0].label||'';
+    // MediaPipe は鏡像基準なので反転して自然な呼称に
+    if(/Left/i.test(cat)) handLabel='右手';
+    else if(/Right/i.test(cat)) handLabel='左手';
+  }
+ 
+  return {
+    lm, handLabel,
+    palmLen,palmWid,aspect,fingerRatio,
+    element, square, longFingers, nearBoundary, palmNear, fingerNear,
+    fingers:{jupiter,saturn,apollo,mercury},
+    fingerRaw:{idxRing,saturnRatio,pinkyReach},
+    gaps,gapAvg,gapIM,gapMR,gapRP,handOpen,
+    thumbAngle,thumbWide,
+    straightness,straightAvg,posture,mostCurved,minS,
+    creaseCache:null
+  };
+}
+ 
+/* =====================================================================
+   文言テーブル
+   ===================================================================== */
+const EL={
+  earth:{name:'地の手',en:'Earth',glyph:'土',opener:'四角く引き締まった手のひらに、控えめな指。あなたは地の手——足を地につけ、着実に物事を積み上げていく人です。'},
+  air:{name:'風の手',en:'Air',glyph:'風',opener:'四角い土台に、すらりと伸びた指。あなたは風の手——考えることを楽しみ、言葉と発想で世界に触れていく人です。'},
+  water:{name:'水の手',en:'Water',glyph:'水',opener:'細長い手のひらに、しなやかな長い指。あなたは水の手——感受性が豊かで、心の機微を敏やかに受けとる人です。'},
+  fire:{name:'火の手',en:'Fire',glyph:'火',opener:'細長い手のひらに、きびきびとした指。あなたは火の手——情熱と行動力で、まわりを動かしていく人です。'}
+};
+const FINGER_META={
+  jupiter:{glyph:'♃',name:'木星 / 人差し指',axis:'自己主張',
+    long:'自信と上昇志向がしっかり。人を導く場に自然と立てる人です。',
+    std:'自信と謙虚さのバランスがよく、状況に応じて前に出られます。',
+    short:'控えめで気負わない構え。押しつけず、静かに信頼を集めます。'},
+  saturn:{glyph:'♄',name:'土星 / 中指',axis:'責任感',
+    long:'責任感と堅実さが際立ちます。締めるところをきちんと締められる人。',
+    std:'まじめさと軽やかさをほどよく併せ持ちます。',
+    short:'自由で柔軟。ルールより流れを大事にできる人です。'},
+  apollo:{glyph:'☉',name:'太陽 / 薬指',axis:'表現',
+    long:'創造性と表現力が豊か。美しいものや魅せることに惹かれます。',
+    std:'表現欲と落ち着きのバランスがとれています。',
+    short:'派手さより本質を重んじる、飾らない人です。'},
+  mercury:{glyph:'☿',name:'水星 / 小指',axis:'伝達',
+    long:'伝える力と機転に富みます。言葉で場を回せる人です。',
+    std:'聞く力と話す力がほどよく調和しています。',
+    short:'多くを語らず、行動と誠実さで伝えるタイプです。'}
+};
+ 
+/* =====================================================================
+   総合鑑定（2段落・相互作用・重複排除）
+   ===================================================================== */
+function buildOverall(r){
+  const el=EL[r.element];
+  const F=r.fingers;
+  // 目立つ指（std以外）を強い順に最大2つ
+  const notable=[];
+  const rank={jupiter:Math.abs(r.fingerRaw.idxRing),saturn:Math.abs(r.fingerRaw.saturnRatio-1),
+              apollo:Math.abs(r.fingerRaw.idxRing),mercury:Math.abs(r.fingerRaw.pinkyReach)};
+  for(const k of ['jupiter','saturn','apollo','mercury']) if(F[k]!=='std') notable.push(k);
+  notable.sort((a,b)=>rank[b]-rank[a]);
+  const top=notable.slice(0,2);
+  const usedInInteraction=new Set();
+ 
+  // 相互作用文（要素×指）
+  let interaction='';
+  if(F.saturn==='long' && r.element==='fire'){ interaction='情熱的でありながら、締めるところはきちんと締められる——火の勢いに芯が通っています。'; usedInInteraction.add('saturn');}
+  else if(F.jupiter==='long' && r.element==='water'){ interaction='感受性の奥に、ぶれない意志が一本通っています。柔らかさと強さが同居する人です。'; usedInInteraction.add('jupiter');}
+  else if(F.apollo==='long' && r.element==='air'){ interaction='考える力と表現する力が結びつき、アイデアをかたちにして手渡せます。'; usedInInteraction.add('apollo');}
+  else if(F.mercury==='long' && r.element==='earth'){ interaction='着実さに、人を和ませる言葉が加わります。信頼と親しみを同時に集める人です。'; usedInInteraction.add('mercury');}
+  else if(F.saturn==='short' && r.element==='water'){ interaction='感じたままに動ける軽やかさがあり、水の流れをせき止めません。'; usedInInteraction.add('saturn');}
+  else if(F.jupiter==='long' && r.element==='fire'){ interaction='前に出る力と勢いが噛み合い、場を引っぱる推進力になります。'; usedInInteraction.add('jupiter');}
+  else if(top.length){ // 汎用の相互作用
+    const k=top[0]; const m=FINGER_META[k];
+    interaction=`${el.name}の性質に、${m.axis}の豊かさが重なって、あなたらしい奥行きを生んでいます。`;
+    usedInInteraction.add(k);
+  }
+ 
+  // 段落1: オープナー + 目立つ指（相互作用で触れた指は差し引く）+ 相互作用
+  let p1=el.opener;
+  if(r.nearBoundary) p1+='隣りあう型の性質も少し混じり、一面では割り切れない味わいがあります。';
+  const fingerSentences=[];
+  for(const k of top){
+    if(usedInInteraction.has(k)) continue;
+    const m=FINGER_META[k];
+    fingerSentences.push(`${m.name.split(' / ')[1]}に表れた${m.axis}——${stripPeriod(FINGER_META[k][F[k]])}`);
+  }
+  if(fingerSentences.length) p1+=fingerSentences.join('。また、')+'。';
+  if(interaction) p1+=interaction;
+ 
+  // 段落2: 開き + 広い間隔補足 → 反り → 親指 → 締め
+  let p2='';
+  if(r.handOpen==='open') p2+='指がのびやかに開き、独立心と開放性を感じさせます。';
+  else if(r.handOpen==='closed') p2+='指を寄せて構える様子には、慎重で内省的なまなざしがうかがえます。';
+  else p2+='指の開きはほどよく、状況に応じて心を開いたり守ったりできる人です。';
+  // 広い間隔の補足
+  const wideGap=[];
+  if(r.gaps.IM==='wide') wideGap.push('考えの独立');
+  if(r.gaps.MR==='wide') wideGap.push('将来への構えの自由さ');
+  if(r.gaps.RP==='wide') wideGap.push('情と行動の自立');
+  if(wideGap.length) p2+='とりわけ'+wideGap.join('・')+'が広くとられています。';
+  // 反り
+  if(r.posture==='straight') p2+='指はまっすぐで、率直で筋を通す気質。';
+  else if(r.posture==='curved'){ p2+='指はしなやかにたわみ、柔軟で相手に合わせる心づかいがあります。';
+    if(r.mostCurved){ p2+=`とくに${curveAxis(r.mostCurved)}のあたりは控えめに出ます。`; } }
+  else p2+='指の反りは中庸で、状況次第で率直にも柔軟にもなれます。';
+  // 親指
+  if(r.thumbWide) p2+='親指が大きく開くのは、寛容さと受けとめる度量の表れです。';
+  p2+='——手のひらという小さな星図に、あなたの今が静かに描かれています。';
+ 
+  return {p1,p2};
+}
+function stripPeriod(s){return s.replace(/。$/,'');}
+function curveAxis(k){return {index:'自己主張',middle:'責任感',ring:'表現',pinky:'伝達'}[k]||'その領域';}
+ 
+/* =====================================================================
+   表示 showReading
+   ===================================================================== */
+function showReading(idx){
+  activeHand=idx;
+  const r=currentHands[idx];
+  const el=EL[r.element];
+ 
+  // element badge
+  $('elBadge').innerHTML=`<div class="glyph">${el.glyph}</div>
+    <div><div class="el-name">${el.name}</div><div class="el-en">${el.en} hand</div></div>`;
+ 
+  // overall
+  const ov=buildOverall(r);
+  $('overallReading').innerHTML=`<p>${ov.p1}</p><p>${ov.p2}</p>`;
+  r._overall=ov;
+ 
+  // fingers grid
+  const fg=$('fingersGrid'); fg.innerHTML='';
+  for(const k of ['jupiter','saturn','apollo','mercury']){
+    const m=FINGER_META[k]; const v=r.fingers[k];
+    const vlabel=v==='long'?'長い':(v==='short'?'短い':'標準');
+    const d=document.createElement('div'); d.className='finger-card';
+    d.innerHTML=`<div class="top"><span class="planet">${m.glyph}</span>
+      <span class="fname">${m.name}</span><span class="verdict">${vlabel}</span></div>
+      <div class="desc">${m[v]}</div>`;
+    fg.appendChild(d);
+  }
+ 
+  // meters: palm aspect + finger ratio
+  const pm=$('postureMeters');
+  const metersHTML = meter('手のひらの型 (縦横比)', r.aspect, T.palmMin, T.palmMax, T.palmBoundary, '四角い', '細長い', r.aspect.toFixed(2))
+    + meter('指の長さ (中指/掌長)', r.fingerRatio, T.fingerMin, T.fingerMax, T.fingerBoundary, '短い', '長い', r.fingerRatio.toFixed(2))
+    + meter('手全体の開き', r.gapAvg, 4, 24, (T.gapOpen+T.gapClosed)/2, '閉じ気味', '開き気味', r.gapAvg.toFixed(1)+'°')
+    + meter('指の反り (弦/実長)', r.straightAvg, 0.93, 1.0, (T.straightStraight+T.straightCurved)/2, 'しなやか', 'まっすぐ', r.straightAvg.toFixed(3));
+  pm.innerHTML=metersHTML;
+ 
+  // posture text
+  let ptxt='';
+  ptxt+=r.handOpen==='open'?'指はのびやかに開いています。':r.handOpen==='closed'?'指を寄せて構えています。':'指の開きはほどよく保たれています。';
+  ptxt+=r.posture==='straight'?'全体にまっすぐで、率直さがうかがえます。':r.posture==='curved'?'全体にしなやかで、柔らかな印象です。':'反りは中庸です。';
+  $('postureText').textContent=ptxt;
+ 
+  // data row (実測)
+  $('dataRow').innerHTML=`
+    <span><b>palmLen</b> ${r.palmLen.toFixed(3)}</span>
+    <span><b>palmWid</b> ${r.palmWid.toFixed(3)}</span>
+    <span><b>aspect</b> ${r.aspect.toFixed(3)}</span>
+    <span><b>fingerRatio</b> ${r.fingerRatio.toFixed(3)}</span>
+    <span><b>gapAvg</b> ${r.gapAvg.toFixed(1)}°</span>
+    <span><b>thumb</b> ${r.thumbAngle.toFixed(1)}°</span>
+    <span><b>straight</b> ${r.straightAvg.toFixed(3)}</span>`;
+ 
+  // lines explain
+  $('linesExplain').innerHTML=`
+    <p><b style="color:var(--heart)">感情線</b> … 小指の下から人差し指の方へ流れる線。心の動き・人との関わり方を映すとされます。</p>
+    <p><b style="color:var(--head)">頭脳線</b> … 手のひらを横切る線。考え方のくせ・興味の向きを表すとされます。</p>
+    <p><b style="color:var(--life)">生命線</b> … 親指を囲むように弧を描く線。活力や生活のリズムの目安とされます。<span style="color:var(--muted)">（長さ＝寿命ではありません）</span></p>
+    <p style="color:var(--muted);margin-top:8px">※ どの線がどれかの色分けは、一般的な位置に基づく<b style="color:var(--gold-soft)">推定</b>です。</p>`;
+ 
+  // footnotes
+  $('footnotes').innerHTML=`
+    <p><b>本物と推定について</b>：手・関節点・各種の比率は写真からの<b>実測</b>です。しわの抽出も本物ですが、「どのしわが三大線か」の色分けと、三大線の参考位置は一般的な位置に基づく<b>推定・目安</b>です。</p>
+    <p><b>楽しみ方</b>：手相は娯楽としてお楽しみください。健康・寿命・運命を断定するものではありません（例：生命線の長さは寿命を意味しません）。</p>
+    <p><b>プライバシー</b>：手の検出・しわの抽出はすべてブラウザ内で行われ、写真は送信されません。AI鑑定を使うときだけ、測定した特徴（写真ではなく文字データ）が送られます。</p>`;
+ 
+  // AI area reset
+  $('aiOut').innerHTML=''; $('btnAI').disabled=false;
+ 
+  // draw overlay
+  creaseMode=false;
+  $('btnRef').classList.add('active'); $('btnCrease').classList.remove('active');
+  drawOverlay();
+ 
+  // crease sliders init
+  $('slKernel').value=CREASE.kernelScale; $('valKernel').textContent=CREASE.kernelScale.toFixed(3);
+  $('slThresh').value=CREASE.threshBias;  $('valThresh').textContent=CREASE.threshBias.toFixed(2);
+}
+ 
+function meter(label,val,min,max,bound,leftLab,rightLab,readout){
+  const clamp=v=>Math.max(0,Math.min(1,(v-min)/(max-min)));
+  const p=clamp(val)*100, bp=clamp(bound)*100;
+  return `<div class="meter"><div class="lab"><span>${label}</span><span class="mono">${readout}</span></div>
+    <div class="track"><div class="bound" style="left:${bp}%"></div><div class="dot" style="left:${p}%"></div></div>
+    <div class="ends"><span>${leftLab}</span><span>${rightLab}</span></div></div>`;
+}
+ 
+/* =====================================================================
+   画像 & オーバーレイ描画
+   ===================================================================== */
+let sourceImage=null;   // HTMLImageElement / canvas of the selected photo
+function drawOverlay(){
+  const r=currentHands[activeHand];
+  const cv=$('palmCanvas'); const ctx=cv.getContext('2d');
+  const img=sourceImage; if(!img) return;
+  const W=img.naturalWidth||img.width, H=img.naturalHeight||img.height;
+  cv.width=W; cv.height=H;
+  ctx.drawImage(img,0,0,W,H);
+ 
+  if(creaseMode && r.creaseCache && r.creaseCache.points){
+    // 実際のしわ
+    for(const pt of r.creaseCache.points){
+      ctx.fillStyle=colorForClass(pt.c);
+      ctx.beginPath();ctx.arc(pt.x*W,pt.y*H,Math.max(1.2,W*0.0016),0,Math.PI*2);ctx.fill();
+    }
+    setLegend(true);
+  } else {
+    // 参考ライン（三大線の一般カーブ）+ ランドマーク
+    drawRefLines(ctx,r.lm,W,H);
+    drawLandmarks(ctx,r.lm,W,H);
+    setLegend(false);
+  }
+}
+function colorForClass(c){return c==='heart'?getCss('--heart'):c==='head'?getCss('--head'):c==='life'?getCss('--life'):getCss('--other');}
+function getCss(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()||'#fff';}
+function setLegend(crease){
+  const L=$('legend');
+  L.innerHTML=`<span><i style="background:var(--heart)"></i>感情線</span>
+    <span><i style="background:var(--head)"></i>頭脳線</span>
+    <span><i style="background:var(--life)"></i>生命線</span>`+
+    (crease?`<span><i style="background:var(--other)"></i>その他のしわ</span>`:'');
+}
+function drawLandmarks(ctx,lm,W,H){
+  ctx.save();
+  ctx.fillStyle='rgba(242,236,255,.9)';
+  const conn=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[9,10],[10,11],[11,12],
+    [13,14],[14,15],[15,16],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17],[0,17]];
+  ctx.strokeStyle='rgba(217,184,106,.55)';ctx.lineWidth=Math.max(1,W*0.002);
+  for(const [a,b] of conn){ctx.beginPath();ctx.moveTo(lm[a].x*W,lm[a].y*H);ctx.lineTo(lm[b].x*W,lm[b].y*H);ctx.stroke();}
+  for(const p of lm){ctx.beginPath();ctx.arc(p.x*W,p.y*H,Math.max(1.5,W*0.0035),0,Math.PI*2);ctx.fill();}
+  ctx.restore();
+}
+// 参考カーブ（正規化・手の座標系から近似生成）
+function refCurves(lm){
+  // 掌の主要点で三大線をおおまかに近似
+  const P=i=>lm[i];
+  const life=[P(5), mid(P(2),P(0),0.3), mid(P(1),P(0),0.55), mid(P(0),P(9),0.15)];
+  const head=[mid(P(5),P(2),0.4), mid(P(0),P(9),0.45), mid(P(17),P(0),0.5)];
+  const heart=[mid(P(17),P(13),0.2), mid(P(13),P(9),0.5), mid(P(9),P(5),0.6), mid(P(5),P(6),0.4)];
+  return {life,head,heart};
+}
+function mid(a,b,t){return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};}
+function drawRefLines(ctx,lm,W,H){
+  const c=refCurves(lm);
+  const drawC=(pts,color)=>{ctx.strokeStyle=color;ctx.lineWidth=Math.max(2,W*0.005);ctx.lineCap='round';
+    ctx.setLineDash([1,W*0.012]);ctx.beginPath();
+    ctx.moveTo(pts[0].x*W,pts[0].y*H);
+    for(let i=1;i<pts.length;i++){const pm=mid(pts[i-1],pts[i],0.5);
+      ctx.quadraticCurveTo(pts[i-1].x*W,pts[i-1].y*H,pm.x*W,pm.y*H);}
+    ctx.lineTo(pts[pts.length-1].x*W,pts[pts.length-1].y*H);ctx.stroke();ctx.setLineDash([]);};
+  drawC(c.life,getCss('--life'));drawC(c.head,getCss('--head'));drawC(c.heart,getCss('--heart'));
+}
+ 
+/* =====================================================================
+   4.7 OpenCV.js しわ検出（遅延ロード）
+   ===================================================================== */
+let cvLoading=null;
+function loadOpenCV(){
+  if(window.cv && window.cv.Mat) return Promise.resolve(window.cv);
+  if(cvLoading) return cvLoading;
+  cvLoading=new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://docs.opencv.org/4.10.0/opencv.js'; s.async=true;
+    s.onload=()=>{ if(window.cv && window.cv.then){ window.cv.then(m=>resolve(m)); }
+      else { const iv=setInterval(()=>{if(window.cv&&window.cv.Mat){clearInterval(iv);resolve(window.cv);}},60);
+             setTimeout(()=>{clearInterval(iv); window.cv&&window.cv.Mat?resolve(window.cv):reject(new Error('cv init'));},9000);} };
+    s.onerror=()=>reject(new Error('opencv load failed'));
+    document.head.appendChild(s);
+  });
+  return cvLoading;
+}
+async function detectCreases(r){
+  const cv=await loadOpenCV();
+  const img=sourceImage;
+  const W0=img.naturalWidth||img.width, H0=img.naturalHeight||img.height;
+  const scale=Math.min(1, CREASE.procW/W0);
+  const PW=Math.round(W0*scale), PH=Math.round(H0*scale);
+  const tmp=document.createElement('canvas'); tmp.width=PW;tmp.height=PH;
+  tmp.getContext('2d').drawImage(img,0,0,PW,PH);
+ 
+  let src=cv.imread(tmp), gray=new cv.Mat(), en=new cv.Mat(), bh=new cv.Mat(),
+      norm=new cv.Mat(), th=new cv.Mat();
+  const dels=[src,gray,en,bh,norm,th];
+  try{
+    cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY);
+    // CLAHE → fallback equalizeHist
+    try{ const clahe=new cv.CLAHE(2.0,new cv.Size(8,8)); clahe.apply(gray,en); clahe.delete(); }
+    catch(e){ cv.equalizeHist(gray,en); }
+    // black-hat morphology
+    let k=Math.max(3,Math.round((PW+PH)/2*CREASE.kernelScale)); if(k%2===0)k++;
+    const kern=cv.getStructuringElement(cv.MORPH_ELLIPSE,new cv.Size(k,k));
+    cv.morphologyEx(en,bh,cv.MORPH_BLACKHAT,kern); kern.delete();
+    cv.normalize(bh,norm,0,255,cv.NORM_MINMAX,cv.CV_8U);
+    // Otsu (感度倍率 threshBias を適用)。th を作り直さず同じ Mat に書き込む。
+    const otsu=cv.threshold(norm,th,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU);
+    if(Math.abs(CREASE.threshBias-1)>1e-3){
+      cv.threshold(norm,th,otsu*CREASE.threshBias,255,cv.THRESH_BINARY);
+    }
+    // palm mask polygon [0,17,13,9,5,2,1]
+    const mk=new cv.Mat.zeros(PH,PW,cv.CV_8UC1);
+    const order=[0,17,13,9,5,2,1];
+    const pts=[]; for(const i of order){pts.push(r.lm[i].x*PW, r.lm[i].y*PH);}
+    const mat=cv.matFromArray(order.length,1,cv.CV_32SC2,pts);
+    const vv=new cv.MatVector(); vv.push_back(mat);
+    cv.fillPoly(mk,vv,new cv.Scalar(255));
+    const er=cv.getStructuringElement(cv.MORPH_ELLIPSE,new cv.Size(Math.max(3,Math.round(k*0.8)),Math.max(3,Math.round(k*0.8))));
+    cv.erode(mk,mk,er); er.delete(); mat.delete(); vv.delete();
+ 
+    // collect points (normalized) + classify
+    const ref=refCurves(r.lm);
+    const points=[];
+    const step=CREASE.step;
+    for(let y=0;y<PH;y+=step){
+      for(let x=0;x<PW;x+=step){
+        if(th.ucharPtr(y,x)[0] && mk.ucharPtr(y,x)[0]){
+          const nx=x/PW, ny=y/PH;
+          points.push({x:nx,y:ny,c:classifyCrease(nx,ny,ref)});
+        }
+      }
+    }
+    mk.delete();
+    r.creaseCache={points};
+    return true;
+  } finally { dels.forEach(m=>{try{m.delete();}catch(e){}}); }
+}
+function classifyCrease(x,y,ref){
+  const near=(pts)=>{let best=1e9;for(let i=1;i<pts.length;i++){best=Math.min(best,distToSeg(x,y,pts[i-1],pts[i]));}return best;};
+  const dl=near(ref.life),dh=near(ref.head),dhe=near(ref.heart);
+  const m=Math.min(dl,dh,dhe);
+  if(m>CREASE.nearLine) return 'other';
+  return m===dl?'life':m===dh?'head':'heart';
+}
+function distToSeg(px,py,a,b){
+  const vx=b.x-a.x,vy=b.y-a.y; const wx=px-a.x,wy=py-a.y;
+  const c1=vx*wx+vy*wy; if(c1<=0)return Math.hypot(px-a.x,py-a.y);
+  const c2=vx*vx+vy*vy; if(c2<=c1)return Math.hypot(px-b.x,py-b.y);
+  const t=c1/c2; return Math.hypot(px-(a.x+t*vx),py-(a.y+t*vy));
+}
+ 
+/* =====================================================================
+   4.6 AI詳細鑑定（claude.aiプレビュー限定 / フォールバック付き）
+   ===================================================================== */
+async function runAI(){
+  const r=currentHands[activeHand];
+  $('btnAI').disabled=true;
+  $('aiOut').innerHTML='<span class="spinner"></span> <span class="hint">星を読んでいます…</span>';
+  const el=EL[r.element];
+  const F=r.fingers; const vl=v=>v==='long'?'長め':v==='short'?'短め':'標準';
+  const features=`四大分類: ${el.name}(${el.en})
+手のひら縦横比: ${r.aspect.toFixed(2)} / 指の長さ比: ${r.fingerRatio.toFixed(2)}
+木星(人差し指): ${vl(F.jupiter)} / 土星(中指): ${vl(F.saturn)} / 太陽(薬指): ${vl(F.apollo)} / 水星(小指): ${vl(F.mercury)}
+手全体の開き: ${r.handOpen==='open'?'開き気味':r.handOpen==='closed'?'閉じ気味':'標準'}（平均${r.gapAvg.toFixed(1)}度）
+指の間隔: 人差し-中${r.gaps.IM}/中-薬${r.gaps.MR}/薬-小${r.gaps.RP}
+指の反り: ${r.posture==='straight'?'まっすぐ':r.posture==='curved'?'しなやか':'中庸'}（弦/実長 ${r.straightAvg.toFixed(3)}）
+親指の開き角度: ${r.thumbAngle.toFixed(0)}度`;
+ 
+  const prompt=`あなたは温かく洞察力のある手相占い師です。以下は、ある人の手のひらから測定した特徴データです（写真は渡していません）。これをもとに、日本語で300〜400字・2〜3段落の鑑定文を書いてください。
+条件:
+- 温かく具体的に。決まり文句や占いの定型句は避ける。
+- 特徴どうしのつながりを必ず一つは織り込む。
+- 数値やラベルはそのまま書かず、性格描写に翻訳する。
+- 断定しすぎず、前向きに締める。
+- 見出しや箇条書きは使わない。地の文のみ。
+ 
+測定データ:
+${features}`;
+ 
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,
+        messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok) throw new Error('http '+res.status);
+    const data=await res.json();
+    const text=(data.content&&data.content[0]&&(data.content[0].text||''))||'';
+    if(!text.trim()) throw new Error('empty');
+    $('aiOut').innerHTML=text.trim().split(/\n{2,}/).map(p=>`<p>${escapeHtml(p.trim())}</p>`).join('');
+  }catch(e){
+    $('aiOut').innerHTML=`<p class="hint">AI鑑定は claude.ai のプレビュー上でのみ利用できます。上のテンプレート鑑定は、そのままお楽しみいただけます。</p>`;
+    $('btnAI').disabled=false;
+  }
+}
+function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+ 
+/* =====================================================================
+   入力: 写真 / カメラ
+   ===================================================================== */
+$('btnPick').onclick=()=>$('fileInput').click();
+$('fileInput').onchange=e=>{ const f=e.target.files&&e.target.files[0]; if(f) handleFile(f); e.target.value=''; };
+$('btnCam').onclick=openCamera;
+ 
+function handleFile(file){
+  const url=URL.createObjectURL(file);
+  const im=new Image();
+  im.onload=async()=>{ URL.revokeObjectURL(url); await processImage(im); };
+  im.onerror=()=>{ setTop('画像を読み込めませんでした。'); URL.revokeObjectURL(url); };
+  im.src=url;
+}
+ 
+async function openCamera(){
+  setTop('<span class="spinner"></span> カメラを起動しています…');
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    const v=document.createElement('video'); v.autoplay=true;v.playsInline=true;v.muted=true;v.srcObject=stream;
+    v.style.cssText='width:100%;border-radius:12px;border:1px solid var(--line)';
+    const box=document.createElement('div'); box.className='panel';
+    box.innerHTML='<p class="hint center">手のひらを枠に入れてボタンを押してください。</p>';
+    const snap=document.createElement('button'); snap.className='btn primary';snap.textContent='📸 撮影';snap.style.width='100%';
+    box.prepend(v); box.appendChild(snap);
+    $('topStatus').innerHTML=''; $('topStatus').appendChild(box);
+    await v.play();
+    snap.onclick=async()=>{
+      const c=document.createElement('canvas'); c.width=v.videoWidth;c.height=v.videoHeight;
+      c.getContext('2d').drawImage(v,0,0);
+      stream.getTracks().forEach(t=>t.stop());
+      $('topStatus').innerHTML='';
+      await processImage(c);
+    };
+  }catch(e){
+    setTop('カメラを起動できませんでした（プレビュー環境ではよく起こります）。かわりに「写真を選ぶ」をお使いください。');
+  }
+}
+function setTop(html){$('topStatus').innerHTML=html;}
+ 
+/* =====================================================================
+   処理パイプライン
+   ===================================================================== */
+async function processImage(imgEl){
+  setTop('<span class="spinner"></span> 手を検出しています…');
+  let lmr;
+  try{
+    const hl=await getHandLandmarker();
+    // ensure canvas-friendly source
+    lmr=hl.detect(imgEl);
+  }catch(e){
+    setTop('手の検出モデルを読み込めませんでした。通信環境をご確認のうえ、もう一度お試しください。');
+    return;
+  }
+  if(!lmr || !lmr.landmarks || lmr.landmarks.length===0){
+    setTop('手を認識できませんでした。手のひらを正面に向け、明るい場所で、指を軽く開いて撮り直してみてください。');
+    return;
+  }
+  sourceImage=imgEl;
+  currentHands=lmr.landmarks.map((lm,i)=>computeReading(lm, lmr.handedness?[lmr.handedness[i]?.[0]]:null));
+  // 左右同判定なら 手1/手2
+  if(currentHands.length===2 && currentHands[0].element===currentHands[1].element){
+    currentHands.forEach((r,i)=>r.handLabel='手'+(i+1));
+  } else if(currentHands.length===2 && currentHands[0].handLabel===currentHands[1].handLabel){
+    currentHands.forEach((r,i)=>r.handLabel='手'+(i+1));
+  }
+ 
+  // hand toggle
+  const ht=$('handToggle');
+  if(currentHands.length>1){
+    ht.style.display='flex'; ht.innerHTML='';
+    currentHands.forEach((r,i)=>{
+      const b=document.createElement('button'); b.className='btn'+(i===0?' active':'');
+      b.textContent=`${r.handLabel}（${EL[r.element].name}）`;
+      b.onclick=()=>{[...ht.children].forEach(c=>c.classList.remove('active'));b.classList.add('active');
+        creaseMode=false;showReading(i);};
+      ht.appendChild(b);
+    });
+  } else ht.style.display='none';
+ 
+  viewTop.classList.add('hidden'); viewResult.classList.remove('hidden');
+  window.scrollTo(0,0);
+  showReading(0);
+  saveHistory();
+}
+ 
+/* toggle ref/crease */
+$('btnRef').onclick=()=>{creaseMode=false;$('btnRef').classList.add('active');$('btnCrease').classList.remove('active');drawOverlay();};
+$('btnCrease').onclick=async()=>{
+  $('btnCrease').classList.add('active');$('btnRef').classList.remove('active');
+  const r=currentHands[activeHand];
+  if(!r.creaseCache){
+    $('legend').innerHTML='<span class="hint"><span class="spinner"></span> しわを抽出しています…</span>';
+    try{ await detectCreases(r); }catch(e){ /* 静かに参考ラインへ */ }
+  }
+  if(r.creaseCache){ creaseMode=true; drawOverlay(); }
+  else { creaseMode=false;$('btnRef').classList.add('active');$('btnCrease').classList.remove('active');
+    setLegend(false); drawOverlay(); }
+};
+ 
+/* crease sliders (debounced) */
+let slTimer=null;
+function onSlider(){
+  CREASE.kernelScale=parseFloat($('slKernel').value); $('valKernel').textContent=CREASE.kernelScale.toFixed(3);
+  CREASE.threshBias=parseFloat($('slThresh').value);  $('valThresh').textContent=CREASE.threshBias.toFixed(2);
+  clearTimeout(slTimer);
+  slTimer=setTimeout(async()=>{
+    const r=currentHands[activeHand]; r.creaseCache=null;
+    if(creaseMode){ try{await detectCreases(r);}catch(e){} drawOverlay(); }
+  },450);
+}
+$('slKernel').oninput=onSlider; $('slThresh').oninput=onSlider;
+ 
+/* AI */
+$('btnAI').onclick=runAI;
+$('btnAgain').onclick=()=>{viewResult.classList.add('hidden');viewTop.classList.remove('hidden');setTop('');renderHistory();window.scrollTo(0,0);};
+ 
+/* =====================================================================
+   4.9 ポスター生成（画像で保存/共有）
+   ===================================================================== */
+function buildPoster(r){
+  const el=EL[r.element];
+  const W=1080;
+  const c=document.createElement('canvas'); const ctx=c.getContext('2d');
+  // measure text first with a temp height
+  c.width=W; c.height=1600;
+  // background
+  const grad=ctx.createLinearGradient(0,0,0,1600); grad.addColorStop(0,'#171334');grad.addColorStop(1,'#0B0A1A');
+  // we render into an offscreen after computing needed height. Do two-pass:
+  // pass 1 compute text lines
+  const ov=r._overall||buildOverall(r);
+  const bodyText=ov.p1+'\n'+ov.p2;
+  ctx.font='34px "Shippori Mincho", serif';
+  const maxTextW=W-160;
+  const lines=wrapJP(ctx,bodyText,maxTextW,34);
+  // layout heights
+  const padTop=70, kanjiH=150, imgH=560, gapAfterImg=50, lineH=54, footH=120;
+  const textBlockH=lines.length*lineH;
+  const H=padTop+kanjiH+40+imgH+gapAfterImg+textBlockH+footH;
+  c.height=H;
+  // redraw bg
+  const g2=ctx.createLinearGradient(0,0,0,H);g2.addColorStop(0,'#171334');g2.addColorStop(1,'#0B0A1A');
+  ctx.fillStyle=g2; ctx.fillRect(0,0,W,H);
+  // stars
+  ctx.fillStyle='rgba(242,236,255,.7)';
+  for(let i=0;i<80;i++){ctx.globalAlpha=0.2+Math.random()*0.5;ctx.beginPath();
+    ctx.arc(Math.random()*W,Math.random()*(H*0.55),Math.random()*2+0.5,0,Math.PI*2);ctx.fill();}
+  ctx.globalAlpha=1;
+  // title
+  ctx.textAlign='center'; ctx.fillStyle='#D9B86A';
+  ctx.font='600 44px "Shippori Mincho", serif';
+  ctx.fillText('手のひらの星図',W/2,padTop+20);
+  // element kanji big
+  ctx.font='600 120px "Shippori Mincho", serif'; ctx.fillStyle='#E7D3A0';
+  ctx.fillText(el.glyph, W/2, padTop+kanjiH+40);
+  ctx.font='500 30px "Shippori Mincho", serif'; ctx.fillStyle='#A7A1C9';
+  ctx.fillText(el.name+' / '+el.en, W/2, padTop+kanjiH+80);
+  // palm image
+  const iy=padTop+kanjiH+120;
+  const img=$('palmCanvas');
+  const iw=img.width,ih=img.height; const drawW=W-200, drawH=Math.min(imgH, drawW*ih/iw);
+  const dx=(W-drawW)/2, dy=iy+(imgH-drawH)/2;
+  ctx.save(); roundRect(ctx,dx,dy,drawW,drawH,20);ctx.clip();
+  ctx.drawImage(img,dx,dy,drawW,drawH); ctx.restore();
+  ctx.strokeStyle='#2C2850';ctx.lineWidth=2;roundRect(ctx,dx,dy,drawW,drawH,20);ctx.stroke();
+  // body text
+  ctx.textAlign='left'; ctx.fillStyle='#F3EFFF'; ctx.font='34px "Shippori Mincho", serif';
+  let ty=iy+imgH+gapAfterImg+40;
+  for(const ln of lines){ctx.fillText(ln,80,ty);ty+=lineH;}
+  // footer
+  ctx.textAlign='center';ctx.fillStyle='#A7A1C9';ctx.font='italic 26px "Cormorant Garamond", serif';
+  ctx.fillText('— 手のひらの星図で占いました —',W/2,H-50);
+  return c;
+}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function wrapJP(ctx,text,maxW){
+  const out=[];
+  for(const para of text.split('\n')){
+    let line='';
+    for(const ch of para){
+      if(ctx.measureText(line+ch).width>maxW){out.push(line);line=ch;}
+      else line+=ch;
+    }
+    out.push(line);
+  }
+  return out;
+}
+ 
+$('btnSaveImg').onclick=()=>{
+  const c=buildPoster(currentHands[activeHand]);
+  c.toBlob(b=>{ const a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='tesou_'+EL[currentHands[activeHand].element].en+'.png';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000); },'image/png');
+};
+$('btnShareImg').onclick=async()=>{
+  const c=buildPoster(currentHands[activeHand]);
+  c.toBlob(async b=>{
+    const file=new File([b],'tesou.png',{type:'image/png'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{ await navigator.share({files:[file],title:'手のひらの星図'}); return; }catch(e){}
+    }
+    const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='tesou.png';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  },'image/png');
+};
+$('btnShareText').onclick=async()=>{
+  const r=currentHands[activeHand]; const ov=r._overall||buildOverall(r);
+  const text=`【手相鑑定】${EL[r.element].name}\n\n${ov.p1}\n\n${ov.p2}\n\n― 手のひらの星図で占いました`;
+  if(navigator.share){ try{ await navigator.share({text}); return; }catch(e){} }
+  try{ await navigator.clipboard.writeText(text); toast('コピーしました'); }
+  catch(e){ toast('コピーできませんでした'); }
+};
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),1800);}
+ 
+/* =====================================================================
+   4.11 履歴
+   ===================================================================== */
+function saveHistory(){
+  try{
+    const r=currentHands[activeHand];
+    // thumbnail 520px jpeg
+    const img=$('palmCanvas'); const s=Math.min(1,520/img.width);
+    const tc=document.createElement('canvas'); tc.width=Math.round(img.width*s);tc.height=Math.round(img.height*s);
+    tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
+    const thumb=tc.toDataURL('image/jpeg',0.7);
+    const ov=r._overall||buildOverall(r);
+    const rec={t:Date.now(),element:r.element,elName:EL[r.element].name,thumb,p1:ov.p1,p2:ov.p2};
+    let arr=Store.read(); arr.unshift(rec); arr=arr.slice(0,8); Store.write(arr);
+  }catch(e){/* 保存不可でも壊さない */}
+  renderHistory();
+}
+function renderHistory(){
+  let arr=[]; try{arr=Store.read();}catch(e){}
+  const panel=$('historyPanel'), box=$('historyThumbs');
+  if(!arr.length){panel.style.display='none';return;}
+  panel.style.display='block'; box.innerHTML='';
+  arr.forEach(rec=>{
+    const d=document.createElement('div'); d.className='th';
+    d.innerHTML=`<img src="${rec.thumb}" alt="${rec.elName}"><div class="cap">${rec.elName}</div>`;
+    d.onclick=()=>openHistory(rec); box.appendChild(d);
+  });
+}
+function openHistory(rec){
+  const m=document.createElement('div'); m.className='modal';
+  m.innerHTML=`<div class="panel box">
+    <div class="element-badge"><div class="glyph">${EL[rec.element].glyph}</div>
+      <div><div class="el-name">${EL[rec.element].name}</div>
+      <div class="el-en">${new Date(rec.t).toLocaleString('ja-JP')}</div></div></div>
+    <img src="${rec.thumb}" style="width:100%;border-radius:12px;border:1px solid var(--line);margin-bottom:12px">
+    <div class="reading"><p>${rec.p1}</p><p>${rec.p2}</p></div>
+    <div class="btnrow" style="margin-top:12px">
+      <button class="btn" id="hShareText">📝 テキストで共有</button>
+      <button class="btn ghost" id="hClose">閉じる</button></div></div>`;
+  document.body.appendChild(m);
+  m.addEventListener('click',e=>{if(e.target===m)m.remove();});
+  m.querySelector('#hClose').onclick=()=>m.remove();
+  m.querySelector('#hShareText').onclick=async()=>{
+    const text=`【手相鑑定】${EL[rec.element].name}\n\n${rec.p1}\n\n${rec.p2}\n\n― 手のひらの星図で占いました`;
+    if(navigator.share){try{await navigator.share({text});return;}catch(e){}}
+    try{await navigator.clipboard.writeText(text);toast('コピーしました');}catch(e){toast('コピーできませんでした');}
+  };
+}
+ 
+/* ---------- アプリバー（戻る + 結果画面の状態） ---------- */
+function syncAppChrome(){
+  const onResult=!viewResult.classList.contains('hidden');
+  document.body.classList.toggle('result-active',onResult);
+}
+$('appBack').onclick=()=>{ $('btnAgain').click(); };
+// 画面の切り替えを監視して自動同期
+new MutationObserver(syncAppChrome).observe(viewResult,{attributes:true,attributeFilter:['class']});
+syncAppChrome();
+ 
+/* init */
+renderHistory();
+</script>
+</body>
+</html>
+ 
+
